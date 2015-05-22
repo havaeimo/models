@@ -7,10 +7,11 @@ import json
 import theano
 import theano.sandbox.softsign
 import numpy as np
-import mlpython.datasets.store as mlstore
 from time import time
 
 from smartpy import Dataset
+
+DATASETS_ENV = 'DATASETS'
 
 
 def save_dict_to_json_file(path, dictionary):
@@ -73,41 +74,35 @@ class WeightsInitializer(object):
         return np.asarray(self.rng.normal(loc=0, scale=self._init_range(dim), size=dim), dtype=theano.config.floatX)
 
 
-# List of supported datasets
-DATASETS = ['adult',
-            'binarized_mnist',
-            'connect4',
-            'dna',
-            'mushrooms',
-            'mnist'
-            'nips',
-            'ocr_letters',
-            'rcv1',
-            'rcv2_russ',
-            'web']
-
-
-def load_dataset(dataset_name):
+def load_mnist():
     #Temporary patch until we build the dataset manager
-    dataset_npy = os.path.join(os.environ['MLPYTHON_DATASET_REPO'], dataset_name, 'data.npz')
-    if not os.path.isfile(dataset_npy):
-        if not os.path.isdir(os.path.join(os.environ['MLPYTHON_DATASET_REPO'], dataset_name)):
-            mlstore.download(dataset_name)
+    dataset_name = "mnist"
 
-        if dataset_name in mlstore.classification_names:
-            trainset, validset, testset = mlstore.get_classification_problem(dataset_name)
-            trainset, validset, testset = zip(*trainset), zip(*validset), zip(*testset)
-            trainset_inputs, trainset_targets = np.array(trainset[0]), np.array(trainset[1], ndmin=2).T
-            validset_inputs, validset_targets = np.array(validset[0]), np.array(validset[1], ndmin=2).T
-            testset_inputs, testset_targets = np.array(testset[0]), np.array(testset[1], ndmin=2).T
-        elif dataset_name in mlstore.distribution_names:
-            trainset, validset, testset = mlstore.get_distribution_problem(dataset_name)
-            trainset_inputs, trainset_targets = np.array(trainset), np.zeros((len(trainset), 0))
-            validset_inputs, validset_targets = np.array(validset), np.zeros((len(validset), 0))
-            testset_inputs, testset_targets = np.array(testset), np.zeros((len(testset), 0))
-        else:
-            print("Not supported type of dataset!")
-            return
+    datasets_repo = os.environ.get(DATASETS_ENV, './datasets')
+    if not os.path.isdir(datasets_repo):
+        os.mkdir(datasets_repo)
+
+    repo = os.path.join(datasets_repo, dataset_name)
+    dataset_npy = os.path.join(repo, 'data.npz')
+
+    if not os.path.isfile(dataset_npy):
+        if not os.path.isdir(repo):
+            os.mkdir(repo)
+
+            import urllib
+            urllib.request.urlretrieve('http://www.cs.toronto.edu/~larocheh/public/datasets/mnist/mnist_train.txt', os.path.join(repo, 'mnist_train.txt'))
+            urllib.request.urlretrieve('http://www.cs.toronto.edu/~larocheh/public/datasets/mnist/mnist_valid.txt', os.path.join(repo, 'mnist_valid.txt'))
+            urllib.request.urlretrieve('http://www.cs.toronto.edu/~larocheh/public/datasets/mnist/mnist_test.txt', os.path.join(repo, 'mnist_test.txt'))
+
+        train_file, valid_file, test_file = [os.path.join(repo, 'mnist_' + ds + '.txt') for ds in ['train', 'valid', 'test']]
+
+        def parse_file(filename):
+            return np.array([np.fromstring(l, dtype=np.float32, sep=" ") for l in open(filename)])
+
+        trainset, validset, testset = parse_file(train_file), parse_file(valid_file), parse_file(test_file)
+        trainset_inputs, trainset_targets = trainset[:, :-1], trainset[:, [-1]]
+        validset_inputs, validset_targets = validset[:, :-1], validset[:, [-1]]
+        testset_inputs, testset_targets = testset[:, :-1], testset[:, [-1]]
 
         np.savez(dataset_npy,
                  trainset_inputs=trainset_inputs, trainset_targets=trainset_targets,
