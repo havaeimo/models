@@ -30,13 +30,13 @@ class Perceptron(Model):
     def parameters(self):
         return {'W': self.W, 'b': self.b}
 
-    def fprop(self, X):
+    def get_model_output(self, X):
         preactivation = T.dot(X, self.W) + self.b
         probs = T.nnet.softmax(preactivation)
         return probs
 
     def use(self, X):
-        probs = self.fprop(X)
+        probs = self.get_model_output(X)
         return T.argmax(probs, axis=1, keepdims=True)
 
     def save(self, path):

@@ -5,9 +5,11 @@ import theano.tensor as T
 from perceptron import Perceptron
 from utils import load_mnist
 from utils import Timer
+
 from smartpy import Trainer, tasks
 from smartpy.optimizers import SGD
 from smartpy.update_rules import ConstantLearningRate
+from smartpy.interfaces.loss import NegativeLogLikelihood as NLL
 
 
 def train_simple_perceptron():
@@ -21,16 +23,8 @@ def train_simple_perceptron():
         model = Perceptron(trainset.input_size, output_size)
         model.initialize()  # By default, uniform initialization.
 
-    with Timer("Making loss symbolic graph"):
-        def mean_nll(input, target):
-            probs = model.fprop(input)
-            nll = -T.log(probs)
-            indices = T.cast(target[:, 0], dtype="int32")  # Targets are floats.
-            selected_nll = nll[T.arange(target.shape[0]), indices]
-            return T.mean(selected_nll)
-
     with Timer("Building optimizer"):
-        optimizer = SGD(model, loss_fct=mean_nll, dataset=trainset, batch_size=100)
+        optimizer = SGD(loss=NLL(model, trainset), batch_size=100)
         optimizer.append_update_rule(ConstantLearningRate(0.0001))
 
     with Timer("Building trainer"):
