@@ -10,6 +10,7 @@ from smartpy import Trainer, tasks
 from smartpy.optimizers import SGD
 from smartpy.update_rules import ConstantLearningRate
 from smartpy.interfaces.loss import NegativeLogLikelihood as NLL
+from smartpy.batch_scheduler import MiniBatchScheduler
 
 
 def train_simple_perceptron():
@@ -24,14 +25,15 @@ def train_simple_perceptron():
         model.initialize()  # By default, uniform initialization.
 
     with Timer("Building optimizer"):
-        optimizer = SGD(loss=NLL(model, trainset), batch_size=100)
+        optimizer = SGD(loss=NLL(model, trainset))
         optimizer.append_update_rule(ConstantLearningRate(0.0001))
 
     with Timer("Building trainer"):
         # Train for 10 epochs
+        batch_scheduler = MiniBatchScheduler(trainset, 100)
         stopping_criterion = tasks.MaxEpochStopping(10)
 
-        trainer = Trainer(optimizer, stopping_criterion=stopping_criterion)
+        trainer = Trainer(optimizer, batch_scheduler, stopping_criterion=stopping_criterion)
 
         # Print time for one epoch
         trainer.append_task(tasks.PrintEpochDuration())
