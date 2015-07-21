@@ -6,19 +6,16 @@ import theano
 import theano.tensor as T
 
 from smartpy import Model
-from utils import load_dict_from_json_file, save_dict_to_json_file
-from utils import WeightsInitializer
-
-
-dtype = theano.config.floatX
+from .utils import load_dict_from_json_file, save_dict_to_json_file, WeightsInitializer
+from smartpy.misc.utils import sharedX
 
 
 class Perceptron(Model):
     def __init__(self, input_size, output_size):
         self.input_size = input_size
         self.output_size = output_size
-        self.W = theano.shared(value=np.zeros((input_size, output_size), dtype=dtype), name='W', borrow=True)
-        self.b = theano.shared(value=np.zeros(output_size, dtype=dtype), name='b', borrow=True)
+        self.W = sharedX(value=np.zeros((input_size, output_size)), name='W', borrow=True)
+        self.b = sharedX(value=np.zeros(output_size), name='b', borrow=True)
 
     def initialize(self, weights_initializer=None):
         if weights_initializer is None:
@@ -28,7 +25,7 @@ class Perceptron(Model):
 
     @property
     def parameters(self):
-        return {'W': self.W, 'b': self.b}
+        return [self.W, self.b]
 
     def get_model_output(self, X):
         preactivation = T.dot(X, self.W) + self.b
@@ -48,7 +45,8 @@ class Perceptron(Model):
         save_dict_to_json_file(pjoin(path, "meta.json"), {"name": self.__class__.__name__})
         save_dict_to_json_file(pjoin(path, "hyperparams.json"), hyperparameters)
 
-        params = {param_name: param.get_value() for param_name, param in self.parameters.items()}
+        params = {param.name if param.name is not None else param.auto_name: param.get_value()
+                  for param in self.parameters}
         np.savez(pjoin(path, "params.npz"), **params)
 
     @classmethod
@@ -60,7 +58,7 @@ class Perceptron(Model):
 
         model = cls(**hyperparams)
         parameters = np.load(pjoin(path, "params.npz"))
-        for param_name, param in model.parameters.items():
-            param.set_value(parameters[param_name])
+        for param, saved_param in zip(model.parameters, parameters.values()):
+            param.set_value(saved_param)
 
         return model
