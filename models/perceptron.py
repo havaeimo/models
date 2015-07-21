@@ -6,19 +6,16 @@ import theano
 import theano.tensor as T
 
 from smartpy import Model
-from utils import load_dict_from_json_file, save_dict_to_json_file
-from utils import WeightsInitializer
-
-
-dtype = theano.config.floatX
+from utils import load_dict_from_json_file, save_dict_to_json_file, WeightsInitializer
+from smartpy.misc.utils import sharedX
 
 
 class Perceptron(Model):
     def __init__(self, input_size, output_size):
         self.input_size = input_size
         self.output_size = output_size
-        self.W = theano.shared(value=np.zeros((input_size, output_size), dtype=dtype), name='W', borrow=True)
-        self.b = theano.shared(value=np.zeros(output_size, dtype=dtype), name='b', borrow=True)
+        self.W = sharedX(value=np.zeros((input_size, output_size)), name='W', borrow=True)
+        self.b = sharedX(value=np.zeros(output_size), name='b', borrow=True)
 
     def initialize(self, weights_initializer=None):
         if weights_initializer is None:
