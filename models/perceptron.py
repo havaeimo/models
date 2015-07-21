@@ -25,7 +25,7 @@ class Perceptron(Model):
 
     @property
     def parameters(self):
-        return {'W': self.W, 'b': self.b}
+        return [self.W, self.b]
 
     def get_model_output(self, X):
         preactivation = T.dot(X, self.W) + self.b
@@ -45,7 +45,8 @@ class Perceptron(Model):
         save_dict_to_json_file(pjoin(path, "meta.json"), {"name": self.__class__.__name__})
         save_dict_to_json_file(pjoin(path, "hyperparams.json"), hyperparameters)
 
-        params = {param_name: param.get_value() for param_name, param in self.parameters.items()}
+        params = {param.name if param.name is not None else param.auto_name: param.get_value()
+                  for param in self.parameters}
         np.savez(pjoin(path, "params.npz"), **params)
 
     @classmethod
@@ -57,7 +58,7 @@ class Perceptron(Model):
 
         model = cls(**hyperparams)
         parameters = np.load(pjoin(path, "params.npz"))
-        for param_name, param in model.parameters.items():
-            param.set_value(parameters[param_name])
+        for param, saved_param in zip(model.parameters, parameters.values()):
+            param.set_value(saved_param)
 
         return model
