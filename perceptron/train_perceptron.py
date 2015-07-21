@@ -2,9 +2,9 @@
 
 import theano.tensor as T
 
-from perceptron import Perceptron
-from utils import load_mnist
-from utils import Timer
+from models.perceptron import Perceptron
+from models.utils import load_mnist
+from models.utils import Timer
 
 from smartpy import Trainer, tasks
 from smartpy.optimizers import SGD

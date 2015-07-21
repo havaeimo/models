@@ -6,7 +6,7 @@ import theano
 import theano.tensor as T
 
 from smartpy import Model
-from utils import load_dict_from_json_file, save_dict_to_json_file, WeightsInitializer
+from .utils import load_dict_from_json_file, save_dict_to_json_file, WeightsInitializer
 from smartpy.misc.utils import sharedX
 
 
