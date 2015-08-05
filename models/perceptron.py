@@ -1,8 +1,8 @@
+from collections import OrderedDict
 import os
 import numpy as np
 from os.path import join as pjoin
 
-import theano
 import theano.tensor as T
 
 from smartpy import Model
@@ -27,10 +27,10 @@ class Perceptron(Model):
     def get_model_output(self, X):
         preactivation = T.dot(X, self.W) + self.b
         probs = T.nnet.softmax(preactivation)
-        return probs
+        return probs, OrderedDict()
 
     def use(self, X):
-        probs = self.get_model_output(X)
+        probs = self.get_model_output(X)[0]
         return T.argmax(probs, axis=1, keepdims=True)
 
     def save(self, path):
