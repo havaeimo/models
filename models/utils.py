@@ -51,13 +51,6 @@ class WeightsInitializer(object):
     def __init__(self, random_seed=None):
         self.rng = np.random.mtrand.RandomState(random_seed)
 
-    @staticmethod
-    def default(proposed_instance, default_instance):
-        if proposed_instance is None:
-            return default_instance
-        else:
-            return proposed_instance
-
     def _init_range(self, dim):
         return np.sqrt(6. / (dim[0] + dim[1]))
 
