@@ -9,7 +9,7 @@ from models.utils import Timer
 from smartpy import Trainer, tasks
 from smartpy.optimizers import SGD
 from smartpy.update_rules import ConstantLearningRate
-from smartpy.interfaces.loss import NegativeLogLikelihood as NLL
+from smartpy.losses.classification_losses import NegativeLogLikelihood as NLL
 from smartpy.batch_scheduler import MiniBatchScheduler
 
 

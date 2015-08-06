@@ -1,8 +1,8 @@
+from collections import OrderedDict
 import os
 import numpy as np
 from os.path import join as pjoin
 
-import theano
 import theano.tensor as T
 
 from smartpy import Model
@@ -17,10 +17,7 @@ class Perceptron(Model):
         self.W = sharedX(value=np.zeros((input_size, output_size)), name='W', borrow=True)
         self.b = sharedX(value=np.zeros(output_size), name='b', borrow=True)
 
-    def initialize(self, weights_initializer=None):
-        if weights_initializer is None:
-            weights_initializer = WeightsInitializer().uniform
-
+    def initialize(self, weights_initializer=WeightsInitializer().uniform):
         self.W.set_value(weights_initializer(self.W.get_value().shape))
 
     @property
@@ -30,10 +27,10 @@ class Perceptron(Model):
     def get_model_output(self, X):
         preactivation = T.dot(X, self.W) + self.b
         probs = T.nnet.softmax(preactivation)
-        return probs
+        return probs, OrderedDict()
 
     def use(self, X):
-        probs = self.get_model_output(X)
+        probs, _ = self.get_model_output(X)
         return T.argmax(probs, axis=1, keepdims=True)
 
     def save(self, path):
