@@ -1,16 +1,15 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
-import theano.tensor as T
 
 from smartmodels.perceptron import Perceptron
 from smartmodels.utils import load_mnist
 from smartmodels.utils import Timer
 
-from smartpy import Trainer, tasks
-from smartpy.optimizers import SGD
-from smartpy.update_rules import ConstantLearningRate
-from smartpy.losses.classification_losses import NegativeLogLikelihood as NLL
-from smartpy.batch_scheduler import MiniBatchScheduler
+from smartlearner import Trainer, tasks
+from smartlearner.optimizers import SGD
+from smartlearner.update_rules import ConstantLearningRate
+from smartlearner.losses.classification_losses import NegativeLogLikelihood as NLL
+from smartlearner.batch_scheduler import MiniBatchScheduler
 
 
 def train_simple_perceptron():

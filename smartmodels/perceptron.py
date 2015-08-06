@@ -4,9 +4,9 @@ from os.path import join as pjoin
 
 import numpy as np
 import theano.tensor as T
-from smartpy.utils import sharedX
-import smartpy.initializers as initer
-from smartpy import Model
+from smartlearner.utils import sharedX
+import smartlearner.initializers as initer
+from smartlearner import Model
 
 from .utils import load_dict_from_json_file, save_dict_to_json_file
 
