@@ -30,7 +30,7 @@ class Perceptron(Model):
         return probs, OrderedDict()
 
     def use(self, X):
-        probs = self.get_model_output(X)[0]
+        probs, _ = self.get_model_output(X)
         return T.argmax(probs, axis=1, keepdims=True)
 
     def save(self, path):
