@@ -47,33 +47,6 @@ ACTIVATION_FUNCTIONS = {
 }
 
 
-class WeightsInitializer(object):
-    def __init__(self, random_seed=None):
-        self.rng = np.random.mtrand.RandomState(random_seed)
-
-    def _init_range(self, dim):
-        return np.sqrt(6. / (dim[0] + dim[1]))
-
-    def uniform(self, dim):
-        init_range = self._init_range(dim)
-        return np.asarray(self.rng.uniform(low=-init_range, high=init_range, size=dim), dtype=theano.config.floatX)
-
-    def zeros(self, dim):
-        return np.zeros(dim, dtype=theano.config.floatX)
-
-    def diagonal(self, dim):
-        W_values = self.zeros(dim)
-        np.fill_diagonal(W_values, 1)
-        return W_values
-
-    def orthogonal(self, dim):
-        max_dim = max(dim)
-        return np.linalg.svd(self.uniform((max_dim, max_dim)))[2][:dim[0], :dim[1]]
-
-    def gaussian(self, dim):
-        return np.asarray(self.rng.normal(loc=0, scale=self._init_range(dim), size=dim), dtype=theano.config.floatX)
-
-
 def load_mnist():
     #Temporary patch until we build the dataset manager
     dataset_name = "mnist"
