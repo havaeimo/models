@@ -1,13 +1,14 @@
 from collections import OrderedDict
 import os
-import numpy as np
 from os.path import join as pjoin
 
+import numpy as np
 import theano.tensor as T
-
+from smartpy.utils import sharedX
+import smartpy.initializers as initer
 from smartpy import Model
-from .utils import load_dict_from_json_file, save_dict_to_json_file, WeightsInitializer
-from smartpy.misc.utils import sharedX
+
+from .utils import load_dict_from_json_file, save_dict_to_json_file
 
 
 class Perceptron(Model):
@@ -17,7 +18,7 @@ class Perceptron(Model):
         self.W = sharedX(value=np.zeros((input_size, output_size)), name='W', borrow=True)
         self.b = sharedX(value=np.zeros(output_size), name='b', borrow=True)
 
-    def initialize(self, weights_initializer=WeightsInitializer().uniform):
+    def initialize(self, weights_initializer=initer.UniformInitializer()):
         self.W.set_value(weights_initializer(self.W.get_value().shape))
 
     @property
