@@ -25,7 +25,7 @@ before_install:
 install:
   - if [[ $TRAVIS_PYTHON_VERSION == '3.3' ]]; then conda create --yes -q -n pyenv mkl python=3.3 numpy scipy nose pyparsing pip flake8 six pep8 pyflakes; fi
   - if [[ $TRAVIS_PYTHON_VERSION == '3.4' ]]; then conda create --yes -q -n pyenv mkl python=3.4 numpy scipy nose pyparsing pip flake8 six pep8 pyflakes; fi
-  - if [[ $TRAVIS_PYTHON_VERSION == '3.5.0b3' ]]; then conda create --yes -q -n pyenv mkl python=3.5 numpy scipy nose pyparsing pip flake8 six pep8 pyflakes; fi
+  - if [[ $TRAVIS_PYTHON_VERSION == '3.5.0b3' ]]; then conda create --yes -q -n pyenv mkl python=3.5.0b3 numpy scipy nose pyparsing pip flake8 six pep8 pyflakes; fi
   - source activate pyenv
   - pip install theano
   - pip install https://github.com/SMART-Lab/smartlearner/archive/master.zip
