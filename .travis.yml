@@ -1,6 +1,7 @@
 sudo: false
 cache:
   directories:
+    - $HOME/.smartdatasets
     - $HOME/download
     - $HOME/.cache/pip
 
