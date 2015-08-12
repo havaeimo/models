@@ -12,7 +12,7 @@ from smartlearner.losses.classification_losses import NegativeLogLikelihood as N
 from smartlearner.batch_scheduler import MiniBatchScheduler
 
 
-def train_simple_perceptron():
+def test_simple_perceptron():
     with Timer("Loading dataset"):
         trainset, validset, testset = load_mnist()
 
@@ -44,7 +44,3 @@ def train_simple_perceptron():
 
     with Timer("Training"):
         trainer.train()
-
-
-if __name__ == "__main__":
-    train_simple_perceptron()

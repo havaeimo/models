@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/SMART-Lab/smartmodels.png)](https://travis-ci.org/SMART-Lab/smartmodels)
+
 # SMART-Models
 This is a repository containing all different models we developed in the SMART lab.
 

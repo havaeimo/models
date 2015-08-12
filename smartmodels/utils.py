@@ -51,7 +51,7 @@ def load_mnist():
     #Temporary patch until we build the dataset manager
     dataset_name = "mnist"
 
-    datasets_repo = os.environ.get(DATASETS_ENV, './datasets')
+    datasets_repo = os.environ.get(DATASETS_ENV, os.path.join(os.environ["HOME"], '.smartdatasets'))
     if not os.path.isdir(datasets_repo):
         os.mkdir(datasets_repo)
 
