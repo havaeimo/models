@@ -3,8 +3,7 @@
 
 from setuptools import setup, find_packages
 
-scripts = ['projects/perceptron/train_perceptron.py',
-           ]
+scripts = []
 
 setup(
     name='smartmodels',
