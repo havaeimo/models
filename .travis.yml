@@ -33,4 +33,3 @@ install:
 # command to run tests, e.g. python setup.py test
 script:
   - nosetests -v
-  - nosetests -sv --match "(?:^|[\\b_\\.//-])[Tt]rain_" projects/*
